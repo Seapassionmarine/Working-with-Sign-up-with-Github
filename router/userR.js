@@ -4,7 +4,7 @@ const { createUser, homePage, socialAccount, extractInfo, logOut } = require("..
 
 const router = express.Router()
 
-router.post('/sign-in', createUser)
+router.post('/sign-up', createUser)
 router.get('/homepage', homePage)
 router.get('/signupwithgithub', socialAccount)
 router.get('/auth/github', passport.authenticate('github', 

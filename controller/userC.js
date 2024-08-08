@@ -25,7 +25,7 @@ exports.createUser = async(req, res)=> {
                 //perform an encrytion of the salted password
                 const hashedPassword = await bcryptjs.hash(Password, saltedPassword);
                 // create object of the body
-                const user = new socialModel({
+                const user = new userModel({
                     FirstName,
                     LastName,
                     Email: Email.toLowerCase(),
@@ -37,7 +37,7 @@ exports.createUser = async(req, res)=> {
                 })
             }
     } catch (err) {
-        res.stauts(500).json(err.message)
+        res.status(500).json(err.message)
     }
 }
 
