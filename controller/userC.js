@@ -4,8 +4,7 @@ const jwt = require('jsonwebtoken')
 const bcryptjs = require('bcryptjs')
 
 
-
-exports.createUser = async(req, res)=> {
+exports.signUp = async (req, res) => {
     try {
         const { FirstName,LastName,Email,Password } = req.body;
         if (!Email || !FirstName || !LastName || !Password) {
@@ -19,25 +18,32 @@ exports.createUser = async(req, res)=> {
                 message: 'User already exists'
             })
         }
-            else {
-                //perform an encryption using salt
-                const saltedPassword = await bcryptjs.genSalt(10);
-                //perform an encrytion of the salted password
-                const hashedPassword = await bcryptjs.hash(Password, saltedPassword);
-                // create object of the body
-                const user = new userModel({
-                    FirstName,
-                    LastName,
-                    Email: Email.toLowerCase(),
-                    password: hashedPassword,
-                });
-             res.status(201).json({
-                message:`User created successfully.`,
-                 data:user
-                })
-            }
+        
+        const saltedeRounds = await bcryptjs.genSalt(10);
+        const hashedPassword = await bcryptjs.hash(Password, saltedeRounds);
+        
+        const user = new userModel({
+            FirstName,
+            LastName,
+            Email:Email.toLowerCase(),
+            Password: hashedPassword
+        })
+        await user.save()
+
+        res.status(201).json({
+            message: 'User created successfully', 
+            data: user
+        })
+
     } catch (err) {
-        res.status(500).json(err.message)
+        if (err.code === 11000) {
+            const whatWentWrong = Object.keys(err.keyValue)[0]
+            return res.status(500).json({               
+                message: `User with this ${whatWentWrong} already exist`
+            })
+        }else{
+            return res.status(500).json(err.message)
+        }
     }
 }
 
