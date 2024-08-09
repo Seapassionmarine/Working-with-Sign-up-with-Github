@@ -12,7 +12,7 @@ router.get('/auth/github', passport.authenticate('github',
         console.log(req.user);
     });
 router.get('/github/callback', passport.authenticate('github', 
-  { successRedirect:'/api/v1/success/signup',
+  { successRedirect:'/api/v1/user/success/signup',
     failureRedirect: '/homepage' }));
 router.get('/success/signup', extractInfo)
 router.post('/log-out', logOut)
